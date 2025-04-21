@@ -44,10 +44,10 @@ make clean    # supprime les exécutables
 ./server 8080        # terminal A
 
 # dans 4 autres terminaux
-./sh13 127.0.0.1 8080 127.0.0.1 4000 Alice
+./sh13 127.0.0.1 8080 127.0.0.1 4000 Sekou
 ./sh13 127.0.0.1 8080 127.0.0.1 4001 Bob
-./sh13 127.0.0.1 8080 127.0.0.1 4002 Carol
-./sh13 127.0.0.1 8080 127.0.0.1 4003 Dave
+./sh13 127.0.0.1 8080 127.0.0.1 4002 Thiery
+./sh13 127.0.0.1 8080 127.0.0.1 4003 Mamadou
 ```
 
 Chaque joueur se connecte avec un **port client différent**.
@@ -81,8 +81,6 @@ La partie se termine à la **première accusation correcte** ; le serveur affic
 * **Threads** : chaque client possède un thread réseau dédié qui publie les messages reçus dans un buffer partagé.
 * **Mutex & synchronisation** : protège le buffer (`pthread_mutex_t`) et flag `volatile int synchro` pour signaler un message prêt.
 * **SDL2** : rendu des textures, gestion de la souris, multi‑fenêtres (plusieurs instances).
-
-*(Les variables globales `gWindow` / `gRenderer` et le message `W` ont été retirés dans cette version simplifiée.)*
 
 ---
 
