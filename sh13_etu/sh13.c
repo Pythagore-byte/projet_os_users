@@ -270,6 +270,8 @@ int main(int argc,char **argv)
 
         /* nb d'objets */
         SDL_Color black={0,0,0,255};
+        // mon ajout 
+        SDL_Color blue  = {30, 30, 150, 255};   /* couleur pour son propre nom */
         for(int i=0;i<8;i++){
             SDL_Surface *s=TTF_RenderText_Solid(font,nbobjets[i],black);
             SDL_Texture *t=SDL_CreateTextureFromSurface(ren,s);
@@ -327,7 +329,8 @@ int main(int argc,char **argv)
         SDL_RenderDrawLine(ren,0,90+120,680,90+120);
         SDL_RenderDrawLine(ren,0,90+180,680,90+180);
         SDL_RenderDrawLine(ren,0,90+240,680,90+240);
-        SDL_RenderDrawLine(ren,0,90+300,680,90+300);
+        //SDL_RenderDrawLine(ren,0,90+300,680,90+300);
+        SDL_RenderDrawLine(ren,0,90+300,0,90+300);
 
         SDL_RenderDrawLine(ren,200,0,200,330);
         for(int x=260;x<=620;x+=60) SDL_RenderDrawLine(ren,x,0,x,330);
@@ -340,13 +343,31 @@ int main(int argc,char **argv)
         SDL_RenderDrawLine(ren,300,350,300,740);
 
         /* noms joueurs */
-        for(int i=0;i<4;i++) if (strlen(gNames[i])>0){
-            SDL_Surface *s=TTF_RenderText_Solid(font,gNames[i],black);
-            SDL_Texture *t=SDL_CreateTextureFromSurface(ren,s);
-            SDL_Rect m={10,110+i*60,s->w,s->h};
-            SDL_RenderCopy(ren,t,NULL,&m);
-            SDL_DestroyTexture(t); SDL_FreeSurface(s);
-        }
+        // for(int i=0;i<4;i++) if (strlen(gNames[i])>0){
+        //     SDL_Surface *s=TTF_RenderText_Solid(font,gNames[i],black);
+        //     SDL_Texture *t=SDL_CreateTextureFromSurface(ren,s);
+        //     SDL_Rect m={10,110+i*60,s->w,s->h};
+        //     SDL_RenderCopy(ren,t,NULL,&m);
+        //     SDL_DestroyTexture(t); SDL_FreeSurface(s);
+        // }
+        /* -------- Noms des joueurs (colonne de gauche) -------- */
+for (int i = 0; i < 4; i++)
+{
+    if (strlen(gNames[i]) == 0) continue;
+
+    /* bleu pour la fenêtre du joueur courant (gId), noir sinon */
+    SDL_Color col = (i == gId) ? blue : black;
+
+    SDL_Surface *s = TTF_RenderText_Solid(font, gNames[i], col);
+    SDL_Texture *t = SDL_CreateTextureFromSurface(ren, s);
+
+    SDL_Rect m = { 10, 110 + i * 60, s->w, s->h };
+    SDL_RenderCopy(ren, t, NULL, &m);
+
+    SDL_DestroyTexture(t);
+    SDL_FreeSurface(s);
+}
+
 
         SDL_RenderPresent(ren);
     }

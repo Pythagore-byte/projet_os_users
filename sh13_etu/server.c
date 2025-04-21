@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <time.h>   
 
 #define NB_PLAYERS 4
 #define NB_CARDS   13
@@ -174,8 +175,9 @@ int main(int argc, char *argv[])
 
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
-
+     
      /* Préparation de la partie (un premier mélange, sera refait quand les 4 joueurs sont là) */
+      srand(time(NULL));
      melangerDeck();
      createTable();
      joueurCourant = 0;
@@ -290,7 +292,7 @@ int main(int argc, char *argv[])
                         char *winner = tcpClients[idJ].name;
 
                         /* Affichage serveur */
-                        printf("Victoire : %s (joueur %d)\n", winner, idJ);
+                        printf("Victoire : %s (joueur %d)\n", winner, idJ+1);
 
                         /* Message spécial pour tous les clients (facultatif) */
                         char reply[256];
