@@ -2,8 +2,8 @@
 #include <SDL2/SDL.h>     
 // #include <SDL_image.h>        
 // #include <SDL_ttf.h>     
-#include <SDL2/SDL_image.h>   // Au lieu de <SDL_image.h>
-#include <SDL2/SDL_ttf.h>     // Au lieu de <SDL_ttf.h>     
+#include <SDL2/SDL_image.h>   
+#include <SDL2/SDL_ttf.h>       
 #include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -12,8 +12,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-static SDL_Window   *gWindow   = NULL;
-static SDL_Renderer *gRenderer = NULL;
 
 pthread_t thread_serveur_tcp_id;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -44,6 +42,7 @@ volatile int synchro;
 /* -------------------- petit serveur TCP local -------------------- */
 void *fn_serveur_tcp(void *arg)
 {
+    (void)arg; // c'est pour eviter warning car arg non utilise
     int sockfd, newsockfd;
     socklen_t clilen;
     struct sockaddr_in serv_addr, cli_addr;
@@ -99,7 +98,11 @@ void sendMessageToServer(char *ip,int port,char *mess)
         close(sockfd); return; }
 
     sprintf(sendbuffer,"%s\n",mess);
-    write(sockfd,sendbuffer,strlen(sendbuffer));
+    //write(sockfd,sendbuffer,strlen(sendbuffer));
+    if (write(sockfd, sendbuffer, strlen(sendbuffer)) < 0)
+    perror("write");
+
+
     close(sockfd);
 }
 
@@ -177,7 +180,7 @@ int main(int argc,char **argv)
 
                 /* bouton CONNECT */
                 if (mx<200 && my<50 && connectEnabled){
-                    char buf[256];
+                    char buf[1024];
                     sprintf(buf,"C %s %d %s",gClientIpAddress,gClientPort,gName);
                     sendMessageToServer(gServerIpAddress,gServerPort,buf);
                     connectEnabled=0;
@@ -266,7 +269,7 @@ int main(int argc,char **argv)
         }
 
         /* nb d'objets */
-        SDL_Color black={0,0,0};
+        SDL_Color black={0,0,0,255};
         for(int i=0;i<8;i++){
             SDL_Surface *s=TTF_RenderText_Solid(font,nbobjets[i],black);
             SDL_Texture *t=SDL_CreateTextureFromSurface(ren,s);

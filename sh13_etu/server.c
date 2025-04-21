@@ -116,17 +116,26 @@ void sendMessageToClient(char *clientip,int clientport,char *mess)
 
     char buffer[256];
     snprintf(buffer,sizeof(buffer),"%s\n",mess);
-    write(sockfd,buffer,strlen(buffer));
+    //write(sockfd,buffer,strlen(buffer)); c'etait avant , y avait des warnings dans la compilation 
+    ssize_t n = write(sockfd, buffer, strlen(buffer));
+    if (n < 0) {
+        perror("write");   /* affiche l’erreur puis on peut décider de */
+        close(sockfd);     /* fermer proprement ou gérer autrement     */
+        return;            /* (ici on sort simplement de la fonction)  */
+    }
     close(sockfd);
 }
 
 /* Envoie à tous les joueurs. */
 void broadcastMessage(char *mess)
 {
-        for (int i=0;i<nbClients;i++)
-                sendMessageToClient(tcpClients[i].ipAddress,
-                                    tcpClients[i].port,
-                                    mess);
+    for (int i=0;i<nbClients;i++)
+    {
+        sendMessageToClient(tcpClients[i].ipAddress,
+            tcpClients[i].port,
+            mess);
+    }
+                
 }
 
 /* Renvoie l'index d'un joueur à partir de son nom. */
